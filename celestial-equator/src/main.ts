@@ -40,18 +40,17 @@ scene.add(earthSphere);
 
 
 const northStarGeometry = new THREE.OctahedronGeometry(8, 0);
-const northStarMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: .5 });
+const northStarMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff});
 const northStarSphere = new THREE.Mesh(northStarGeometry, northStarMaterial);
 const northStarPosition = rotate(convertLatitude(LATITUDE))
 northStarSphere.position.x = northStarPosition.x
 northStarSphere.position.y = northStarPosition.y
 scene.add(northStarSphere)
 
-const celestialEqGeometry = new THREE.CylinderGeometry(100, 100, 100, 32);
+const celestialEqGeometry = new THREE.CylinderGeometry(100, 100, 50, 32);
 const celestialEqMaterial = new THREE.MeshBasicMaterial({ color: 0x0ff000 });
 const celestialEqMesh = new THREE.Mesh(celestialEqGeometry, celestialEqMaterial);
 const celestialEqPosition = rotate(convertLatitude(EQUATOR))
-console.log(celestialEqPosition)
 celestialEqMesh.rotation.z = Math.floor(celestialEqPosition.x) // angle of equator from latitude
 scene.add(celestialEqMesh)
 
