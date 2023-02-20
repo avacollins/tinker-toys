@@ -1,14 +1,17 @@
 import * as THREE from 'three'
 
-const normal =  window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
+function whatSize() {
+    var bestFit = window.innerHeight >= 1000 ? 1000 : 500
+    return bestFit
+}
+
 const sizes = {
-    width: normal,
-    height: normal
+    width: whatSize(),
+    height: whatSize()
 }
 
 const LATITUDE = 47 // hardcoded here; to be derived from user GPS latitude rounded down
-const EQUATOR = LATITUDE + 90
-const OBSERVER = { x: sizes.width / 4, y: sizes.height / 4 }
+const OBSERVER = { x: 125, y: 125 }
 const NORTH_STAR = { x: 0, y: 0 }
 
 function convertLatitude(lat) {
@@ -52,21 +55,24 @@ northStarSphere.position.x = northStarPosition.x /100
 northStarSphere.position.y = northStarPosition.y /100
 scene.add(northStarSphere)
 
-const celestialEqGeometry = new THREE.CylinderGeometry(1, 1, .65, 32);
+const celestialEqGeometry = new THREE.CylinderGeometry(1, 1, .55, 32);
 const celestialEqMaterial = new THREE.MeshBasicMaterial();
 celestialEqMaterial.transparent = true
 celestialEqMaterial.alphaMap = zodiacAlpha
 const celestialEqMesh = new THREE.Mesh(celestialEqGeometry, celestialEqMaterial);
-const celestialEqPosition = rotate(convertLatitude(EQUATOR), OBSERVER, NORTH_STAR)
-celestialEqMesh.rotation.z = Math.floor(celestialEqPosition.x/100) // angle of equator from latitude
+const celestialEqPosition = rotate(convertLatitude(90), NORTH_STAR,  northStarPosition)
+console.log(celestialEqPosition.y, northStarPosition)
+// celestialEqMesh.rotation.y = 0
+// celestialEqMesh.rotation.x = 0
+celestialEqMesh.rotation.z = celestialEqPosition.y/100
 scene.add(celestialEqMesh)
 
 window.addEventListener('resize', () => {
-    var norm = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
+    var norm = whatSize()
     sizes.width = norm
     sizes.height = norm
 
-    camera.aspect = sizes.width / sizes.height
+    camera.aspect = norm / norm
  
     camera.updateProjectionMatrix()
     renderer.setSize(sizes.width, sizes.height)
@@ -76,7 +82,7 @@ window.addEventListener('resize', () => {
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
-camera.position.y = .25
+camera.position.y = 0
 camera.position.z = (sizes.height/2.5)/100
 scene.add(camera)
 
